@@ -1,5 +1,5 @@
 const express = require('express');
-
+const projectControllers = require('../controllers/project.controller')
 const router = express.Router();
 
 router.get('/get-all-projects', projectControllers.getAllProjects)
