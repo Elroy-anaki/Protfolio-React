@@ -1,11 +1,61 @@
+import { lazy } from "react";
+import {
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+  createRoutesFromElements,
+  Outlet,
+} from "react-router-dom";
+import Nav from "./pages/section/Nav.jsx/Nav";
+import ErrorPage from "./pages/ErrorPage/ErrorPage";
 
-import './App.css'
 
-function App() {
-
+function Root() {
   return (
-   <div></div>
-  )
+    <>
+      <Nav />
+      <Outlet />
+    </>
+  );
 }
 
-export default App
+function App() {
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<Root />}  errorElement={<ErrorPage/>}
+>
+        <Route
+          index
+          lazy={async () => 
+            ({Component: (await import("./pages/ui/About Me/AboutMe")).default})}
+        />
+        <Route path="/home" element={<div>Home</div>} />
+        <Route
+          path="/about-me"
+          lazy={async () => 
+            ({Component: (await import("./pages/ui/About Me/AboutMe")).default})}        />
+
+        <Route path="/projects">
+          <Route
+            index
+            lazy={async () => 
+              ({Component: (await import("./pages/ui/Projects/ProjectsSection/ProjectsSection")).default})}
+          />
+          <Route
+            path="project-page/:projectId"
+            lazy={async () => 
+              ({Component: (await import("./pages/ui/Projects/ProjectPage/ProjectPage")).default})}
+          />
+        </Route>
+      </Route>
+    )
+  );
+
+  return (
+    <div>
+      <RouterProvider router={router} />
+    </div>
+  );
+}
+
+export default App;
